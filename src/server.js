@@ -2,7 +2,6 @@ const express = require("express");
 const handlebars = require("express-handlebars");
 const path = require("path");
 const { options } = require("./config/connections");
-const { Contenedor } = require("./managers/contenedorProductos");
 const { ContenedorSQL } = require("./managers/contenedorSQL");
 const { Server } = require("socket.io");
 
@@ -10,7 +9,6 @@ let messages = [];
 
 const productosApi = new ContenedorSQL(options.mariaDB, "productos");
 const chatApi = new ContenedorSQL(options.sqliteDB, "chat");
-const prodService = new Contenedor("productos.txt");
 const viewsFolder = path.join(__dirname, "views");
 
 const app = express();
@@ -60,7 +58,7 @@ app.get("/", (req, res) => {
 app.post("/productos", async (req, res) => {
     const newProducto = req.body;
     console.log(newProducto);
-    await prodService.save(newProducto);
+    await productosApi.save(newProducto);
     res.redirect("/");
 })
 
